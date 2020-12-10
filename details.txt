@@ -1,0 +1,1 @@
+This is code for a melee fighting game that i am working on. Feel free to use it for your personal projects or game jams. Sorry for the misleading variables.
