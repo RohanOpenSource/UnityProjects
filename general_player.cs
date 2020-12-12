@@ -14,10 +14,11 @@ public class player_movement : MonoBehaviour
     public Sprite normal;
     public Animator anim;
     public Transform atk;
-    public float atkr;
+    public float atkr=4;
     public LayerMask enemy;
     public bool canDamage = true;
     public int health=100;
+    public float jumpForce=10f;
 
     private void Update()
     {
@@ -29,6 +30,12 @@ public class player_movement : MonoBehaviour
             anim.SetBool("isRunning", true);
             
         }
+        /*if (Input.GetKeyDown("w"))
+        {
+            Vector2 movement = new Vector2(rb.velocity.x, jumpForce);
+            rb.velocity = movement;
+            //anim.SetTrigger("DoJump");
+        }*/
 
         else
         {
@@ -44,9 +51,9 @@ public class player_movement : MonoBehaviour
         {
             transform.localScale = new Vector3(-1f, 1f, 1f);
         }
-        if (Input.GetKeyDown(KeyCode.Space)){
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             Attack();
-
         }
         if(Physics2D.OverlapCircle(atk.position, atkr-0.5f, enemy) && canDamage)
         {
@@ -60,9 +67,12 @@ public class player_movement : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        anim.SetTrigger("Hurt");
         if (health <= 0)
         {
-            SceneManager.LoadScene("level");
+            anim.SetTrigger("Death");
+            StartCoroutine(waiter());
+            
         }
         canDamage = false;
         StartCoroutine(Flash());
@@ -80,7 +90,8 @@ public class player_movement : MonoBehaviour
     }
     public void Attack()
     {
-        anim.SetTrigger("Attack");
+        
+        anim.SetTrigger("Attack1");
         Collider2D[] e=Physics2D.OverlapCircleAll(atk.position, atkr, enemy);
         foreach(Collider2D en in e)
         {
@@ -100,10 +111,14 @@ public class player_movement : MonoBehaviour
         rb.velocity = movement;
     }
 
+
     IEnumerator waiter()
     {
-        spr.sprite = m;
-        yield return new WaitForSeconds(0.25f);
-        spr.sprite = normal;
+
+
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("level");
+
     }
 }
+
